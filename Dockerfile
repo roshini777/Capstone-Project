@@ -2,7 +2,7 @@ FROM python:3.7.3-stretch
 
 WORKDIR /app
 
-COPY . application.py /app/
+COPY . app.py /app/
 
 # hadolint ignore=DL3013
 RUN pip install --upgrade pip &&\
@@ -10,4 +10,4 @@ RUN pip install --upgrade pip &&\
 
 EXPOSE 80
 
-CMD ["python", "application.py"]
+CMD ["python", "app.py"]
