@@ -54,7 +54,7 @@ jobs:
           command: |
             echo "Image Details: $DOCKER_IMAGE_NAME"
             docker login -u="$DOCKER_USER" -p="$DOCKER_PASSWORD"
-            docker tag $DOOCKERHUB_IMAGE $DOCKER_USER/$DOCKERHUB_IMAGE:$CIRCLE_WORKFLOW_ID
+            docker tag $DOCKERHUB_IMAGE $DOCKER_USER/$DOCKERHUB_IMAGE:$CIRCLE_WORKFLOW_ID
             docker push $DOCKER_USER/$DOCKERHUB_IMAGE:$CIRCLE_WORKFLOW_ID
 
 workflows:
