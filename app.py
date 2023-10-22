@@ -5,7 +5,7 @@ app = Flask(__name__)
 def home():
     return "<h1>Hello Udacity!This is my capstone project and its working.</h1>"
 
-this is error forced to fail lint step
+this is error
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True) 
