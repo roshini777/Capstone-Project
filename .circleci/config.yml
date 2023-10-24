@@ -69,41 +69,41 @@ jobs:
           name: Setup Network for EKS Cluster
           command: |
             aws cloudformation deploy \
-              --template-file cloudformation/SetupClusterNetwork.yml \
+              --template-file Cloudformation/SetupClusterNetwork.yml \
               --tags project=${ENVIRONMENT_TAG}-project \
               --stack-name "${ENVIRONMENT_TAG}-eks-network" \
               --region ${AWS_DEFAULT_REGION} \
-              --parameter-overrides file://cloudformation/SetupClusterNetwork-params.json
+              --parameter-overrides file://Cloudformation/SetupClusterNetwork-params.json
       - run:
           name: Setup EKS Cluster
           command: |
             aws cloudformation deploy \
-              --template-file cloudformation/CreateEKSCluster.yml \
+              --template-file Cloudformation/CreateEKSCluster.yml \
               --tags project=${ENVIRONMENT_TAG}-project \
               --stack-name "${ENVIRONMENT_TAG}-eks-cluster" \
               --region ${AWS_DEFAULT_REGION} \
-              --parameter-overrides file://cloudformation/CreateEKSCluster-params.json \
+              --parameter-overrides file://Cloudformation/CreateEKSCluster-params.json \
               --capabilities CAPABILITY_NAMED_IAM
           no_output_timeout: 15m
       - run:
           name: Setup EKS Nodegroup
           command: |
             aws cloudformation deploy \
-              --template-file cloudformation/CreateClusterNodes.yml \
+              --template-file Cloudformation/CreateClusterNodes.yml \
               --tags project=${ENVIRONMENT_TAG}-project \
               --stack-name "${ENVIRONMENT_TAG}-eks-nodegroup" \
               --region ${AWS_DEFAULT_REGION} \
-              --parameter-overrides file://cloudformation/CreateClusterNodes-params.json \
+              --parameter-overrides file://Cloudformation/CreateClusterNodes-params.json \
               --capabilities CAPABILITY_NAMED_IAM
       - run:
           name: Configure Nodegroup management
           command: |
             aws cloudformation deploy \
-              --template-file cloudformation/SetupClusterNodegroup.yml \
+              --template-file Cloudformation/SetupClusterNodegroup.yml \
               --tags project=${ENVIRONMENT_TAG}-project \
               --stack-name "${ENVIRONMENT_TAG}-eks-management" \
               --region ${AWS_DEFAULT_REGION} \
-              --parameter-overrides file://cloudformation/SetupClusterNodegroup-params.json \
+              --parameter-overrides file://Cloudformation/SetupClusterNodegroup-params.json \
               --output text >> ~/DeployMessage.txt
             cat ~/DeployMessage.txt
 
