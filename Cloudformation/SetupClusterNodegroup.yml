@@ -1,0 +1,57 @@
+Description: >
+  Roshini Sounderarajan
+  Two servers created to setup AWS EKS Cluster
+
+Parameters:
+  Environment:
+    Description: Prefixing resources with an environment name
+    Default: udacity
+    Type: String
+  SSHKey:
+    Description: SSH Keypair for EC2 instance
+    Default: Udacity
+    Type: String
+  amiId:
+    Description: AMID id for the OS image
+    Default: ami-0767046d1677be5a0
+    Type: String
+
+Resources:
+  InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Sub ${Environment}-management-SG
+      GroupDescription: Allow port 22 for management
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+
+  setupHost1:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      SecurityGroups:
+        - Ref: InstanceSecurityGroup
+      KeyName: !Ref SSHKey
+      ImageId: !Ref amiId
+      Tags:
+        - Key: Name
+          Value: !Sub ${Environment}-host1
+        - Key: Project
+          Value: !Ref Environment
+
+  setupHost2:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      SecurityGroups:
+        - Ref: InstanceSecurityGroup
+      KeyName: !Ref SSHKey
+      ImageId: !Ref amiId
+      Tags:
+        - Key: Name
+          Value: !Sub ${Environment}-host2
+        - Key: Project
+          Value: !Ref Environment

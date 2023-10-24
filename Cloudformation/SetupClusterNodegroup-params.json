@@ -1,0 +1,5 @@
+[
+    "Environment=udacity",
+    "SSHKey=Udacity",
+    "amiId=ami-0fc5d935ebf8bc3bc"
+]
