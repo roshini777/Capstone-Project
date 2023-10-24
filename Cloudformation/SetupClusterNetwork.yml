@@ -1,0 +1,216 @@
+---
+Description: >
+  Roshini Sounderarajan
+  This template will create a VPC network for the EKS setup
+
+Parameters:
+  Environment:
+    Description: Prefixing resources with an environment name
+    Default: udacity
+    Type: String
+
+  VpcCIDR:
+    Type: String
+    Default: 172.31.0.0/16
+    Description: VPC's CIDR range
+
+  PublicSubnetACIDR:
+    Type: String
+    Default: 172.31.80.0/20
+    Description: public subnet A cidrBlock 
+
+  PublicSubnetBCIDR:
+    Type: String
+    Default: 172.31.16.0/20
+    Description: public subnet B cidrBlock 
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      -
+        Label:
+          default: "Network Configuration"
+        Parameters:
+          - VpcBlock
+          - PublicSubnetACIDR
+          - PublicSubnetBCIDR
+
+Resources:
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock:  !Ref VpcCIDR
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${Environment}-VPC
+
+  InternetGateway:
+    Type: "AWS::EC2::InternetGateway"
+
+  VPCGatewayAttachment:
+    Type: "AWS::EC2::VPCGatewayAttachment"
+    Properties:
+      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref VPC
+
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: !Sub ${Environment}-Public-Subnets
+        - Key: Network
+          Value: !Sub ${Environment}-Public
+
+  PublicRoute:
+    DependsOn: VPCGatewayAttachment
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  NatGateway1:
+    DependsOn:
+      - NatGatewayEIP1
+      - PublicSubnetA
+      - VPCGatewayAttachment
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: !GetAtt 'NatGatewayEIP1.AllocationId'
+      SubnetId: !Ref PublicSubnetA
+      Tags:
+        - Key: Name
+          Value: !Sub ${Environment}-NatGatewayAZ1
+
+  NatGateway2:
+    DependsOn:
+      - NatGatewayEIP2
+      - PublicSubnetB
+      - VPCGatewayAttachment
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: !GetAtt 'NatGatewayEIP2.AllocationId'
+      SubnetId: !Ref PublicSubnetB
+      Tags:
+        - Key: Name
+          Value: !Sub ${Environment}-NatGatewayAZ2
+
+  NatGatewayEIP1:
+    DependsOn:
+      - VPCGatewayAttachment
+    Type: 'AWS::EC2::EIP'
+    Properties:
+      Domain: vpc
+
+  NatGatewayEIP2:
+    DependsOn:
+      - VPCGatewayAttachment
+    Type: 'AWS::EC2::EIP'
+    Properties:
+      Domain: vpc
+
+  PublicSubnetA:
+    Type: AWS::EC2::Subnet
+    Metadata:
+      Comment: Subnet 1
+    Properties:
+      MapPublicIpOnLaunch: true
+      AvailabilityZone:
+        Fn::Select:
+          - '0'
+          - Fn::GetAZs:
+              Ref: AWS::Region
+      CidrBlock:
+        Ref: PublicSubnetACIDR
+      VpcId:
+        Ref: VPC
+      Tags:
+        - Key: Name
+          Value: !Sub ${Environment}-PublicSubnetA
+        - Key: kubernetes.io/role/elb
+          Value: 1
+
+  PublicSubnetB:
+    Type: AWS::EC2::Subnet
+    Metadata:
+      Comment: Subnet 2
+    Properties:
+      MapPublicIpOnLaunch: true
+      AvailabilityZone:
+        Fn::Select:
+          - '1'
+          - Fn::GetAZs:
+              Ref: AWS::Region
+      CidrBlock:
+        Ref: PublicSubnetBCIDR
+      VpcId:
+        Ref: VPC
+      Tags:
+        - Key: Name
+          Value: !Sub ${Environment}-PublicSubnetB
+        - Key: kubernetes.io/role/elb
+          Value: 1
+
+  PublicSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnetA
+      RouteTableId: !Ref PublicRouteTable
+
+  PublicSubnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnetB
+      RouteTableId: !Ref PublicRouteTable
+
+  ControlPlaneSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Cluster communication with worker nodes
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+
+Outputs:
+  VPC:
+    Description: Reference to the VPC created
+    Value: !Ref VPC
+    Export:
+      Name: !Sub ${Environment}-VPC
+
+  PublicRouteTable:
+    Description: Public Routing Table
+    Value: !Ref PublicRouteTable
+    Export:
+      Name: !Sub ${Environment}-PUB-RT
+
+  SubnetIds:
+    Description: Subnets IDs
+    Value: !Join [ ",", [ !Ref PublicSubnetA, !Ref PublicSubnetB ] ]
+    Export:
+      Name: !Sub ${Environment}-PUB-NETS
+
+  SecurityGroup:
+    Description: Security group for the nodes
+    Value: !Ref ControlPlaneSecurityGroup
+    Export:
+      Name: !Sub ${Environment}-SCG
+
+  PublicSubnet1:
+    Description: Public subnet in the 1st AZ
+    Value: !Ref PublicSubnetA
+    Export:
+      Name: !Sub ${Environment}-PUB1-SN
+
+  PublicSubnet2:
+    Description: Public subnet in the 2nd AZ
+    Value: !Ref PublicSubnetB
+    Export:
+      Name: !Sub ${Environment}-PUB2-SN

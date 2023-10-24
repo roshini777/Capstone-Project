@@ -1,0 +1,64 @@
+Description: >
+  Roshini Sounderarajan
+  This template will create an AWS EKS cluster
+Parameters:
+  Environment:
+    Description: Prefixing resources with an environment name
+    Default: udacity
+    Type: String
+
+
+Resources:
+  ClusterProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      InstanceProfileName: !Sub ${Environment}-profile-cluster
+      Path: "/"
+      Roles:
+        - !Ref RoleEKSCluster
+
+  RoleEKSCluster:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${Environment}-role-cluster
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - eks.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
+        - arn:aws:iam::aws:policy/AmazonEKSServicePolicy
+        - arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess
+
+  CapstoneCluster:
+    Type: AWS::EKS::Cluster
+    Properties:
+      Version: "1.27"
+      Name: !Sub ${Environment}-cluster
+      RoleArn: !GetAtt RoleEKSCluster.Arn
+      ResourcesVpcConfig:
+        SecurityGroupIds:
+          - Fn::ImportValue: !Sub ${Environment}-SCG
+        SubnetIds:
+          Fn::Split:
+            - ","
+            - Fn::ImportValue:
+                Fn::Sub: ${Environment}-PUB-NETS
+Outputs:
+  EksId:
+    Description: EKS Cluster ID
+    Value: !Ref CapstoneCluster
+    Export:
+      Name: !Sub ${Environment}-EKSCluster
+
+  EKSRoleArn:
+    Description: Role for Cluster Creation
+    Value: !GetAtt RoleEKSCluster.Arn
+    Export:
+      Name: !Sub ${Environment}-EKSRole

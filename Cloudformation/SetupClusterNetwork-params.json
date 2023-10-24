@@ -1,0 +1,6 @@
+[
+    "Environment=udacity",
+    "VpcCIDR=172.31.0.0/16",
+    "PublicSubnetACIDR=172.31.80.0/20",
+    "PublicSubnetBCIDR=172.31.16.0/20"
+]
