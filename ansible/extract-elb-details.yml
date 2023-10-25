@@ -1,6 +1,6 @@
 ---
 - name: "Save LoadBalancer's DNS name locally"
-  hosts: udacity[0]
+  hosts: setup[0]
   user: ubuntu
   gather_facts: false
   become: yes
