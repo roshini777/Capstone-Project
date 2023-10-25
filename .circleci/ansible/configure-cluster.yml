@@ -1,0 +1,11 @@
+---
+- name: "Configure the EKS cluster with kubectl"
+  hosts: setup[0]
+  user: ubuntu
+  gather_facts: false
+  become: yes
+  vars:
+    ENVIRONMENT_NAME: "{{ lookup('env', 'ENVIRONMENT_TAG') }}"
+  roles:
+    - udacity-deployment
+    - udacity-service
