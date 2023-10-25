@@ -132,10 +132,10 @@ jobs:
           fingerprints: ["9c:df:cb:3c:19:b8:89:ae:56:e7:d3:bf:c5:aa:ba:f1"]
       - attach_workspace:
           at: ~/
-      - run:
-          name: Install dependencies
-          command: |
-            apk add --update ansible
+      #- run:
+      #    name: Install dependencies
+      #    command: |
+      #      apk add --update ansible
       - run:
           name: setup management server
           command: |
@@ -161,7 +161,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --update ansible
+            sudo apk add --update ansible
       - run:
           name: Configure server
           command: |
