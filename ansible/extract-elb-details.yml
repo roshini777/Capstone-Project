@@ -18,3 +18,4 @@
         content: "{{ elb_details.stdout }}"
         dest: "~/elb_details.txt"
       delegate_to: localhost
+      shell: cat ~/elb_details.txt

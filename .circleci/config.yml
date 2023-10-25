@@ -196,7 +196,7 @@ jobs:
             cat ~/inventory.txt
             cd ansible
             ansible-playbook -i ~/inventory.txt extract-elb-details.yml
-            cat ~/elb_details.txt
+           # cat ~/elb_details.txt
       - persist_to_workspace:
           root: ~/
           paths:
