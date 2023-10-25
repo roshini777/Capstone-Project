@@ -5,7 +5,7 @@
   gather_facts: false
   become: yes
   vars:
-    ENVIRONMENT_NAME: "{{ lookup('env', 'ENVIRONMENT_TAG') }}"
+    ENVIRONMENT_TAG: "{{ lookup('env', 'ENVIRONMENT_TAG') }}"
   roles:
     - udacity-deployment
     - udacity-service
