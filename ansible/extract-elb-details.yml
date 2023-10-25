@@ -5,7 +5,7 @@
   gather_facts: false
   become: yes
   vars:
-    ENVIRONMENT_NAME: "{{ lookup('env', 'ENVIRONMENT_TAG') }}"
+    ENVIRONMENT_TAG: "{{ lookup('env', 'ENVIRONMENT_TAG') }}"
   tasks:
     - name: Get the LoadBalancer's DNS name
       shell: "./bin/kubectl get svc {{ ENVIRONMENT_TAG }}-service"
