@@ -1,5 +1,15 @@
 version: 2.1
 
+commands:
+
+  install_ansible:
+    steps:
+      - run:
+          command: |
+            sudo apt update
+            sudo apt install software-properties-common
+            sudo add-apt-repository --yes --update ppa:ansible/ansible
+            sudo apt install ansible
 jobs:
   make-build:
     docker:
@@ -136,6 +146,7 @@ jobs:
       #    name: Install dependencies
       #    command: |
       #      apk add --update ansible
+      - install_ansible
       - run:
           name: setup management server
           command: |
