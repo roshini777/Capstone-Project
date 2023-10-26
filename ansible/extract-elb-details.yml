@@ -12,11 +12,15 @@
       register: elb_details
       args:
         chdir: $HOME
-    - debug: var=elb_details.stdout_lines
 
     - name: Copy the output to a local file
       copy:
         content: "{{ elb_details.stdout }}"
         dest: "~/elb_details.txt"
       delegate_to: localhost
+
+    - name: Print text file
+      shell: "cat ~/elb_details.txt"
+
+   
   
