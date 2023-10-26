@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
         - name: udacity-app
-          image: roshini777/capstone1.0
+          image: roshini777/capstoneudacity
           ports:
             - containerPort: 80
