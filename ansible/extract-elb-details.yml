@@ -19,8 +19,8 @@
         dest: "~/elb_details.txt"
       delegate_to: localhost
 
-    - name: Print text file
-      shell: "cat ~/elb_details.txt"
+   # - name: Print text file
+   #   shell: "cat ~/elb_details.txt"
 
    
   

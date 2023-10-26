@@ -202,7 +202,24 @@ jobs:
           paths:
             - inventory.txt
 
-  
+
+  deploy-app:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: ["9c:df:cb:3c:19:b8:89:ae:56:e7:d3:bf:c5:aa:ba:f1"]
+      - attach_workspace:
+          at: ~/
+      - install_ansible
+      - run:
+          name: Deploy Updated Docker image
+          command: |
+            cat ~/inventory.txt
+            cd ansible
+            ansible-playbook -i ~/inventory.txt deploy-docker.yml
+          no_output_timeout: 2m
 
 
 workflows:
@@ -226,3 +243,6 @@ workflows:
           requires:
             - setup-infrastructure
             - dockerhub-upload
+      - deploy-app:
+          requires:
+            - setup-cluster
