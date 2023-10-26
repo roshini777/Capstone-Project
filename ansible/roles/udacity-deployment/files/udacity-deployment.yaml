@@ -14,8 +14,10 @@ spec:
       labels:
         app: udacity-app
     spec:
+      terminationGracePeriodSeconds: 30    
       containers:
         - name: udacity-app
           image: roshini777/capstonetest:latest
+          imagePullPolicy: "Always"
           ports:
             - containerPort: 80

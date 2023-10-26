@@ -190,13 +190,6 @@ jobs:
                 echo "Wait 60 seconds..."
                 sleep 60
               fi
-      - run:
-          name: Fetch DNS of Loadbalancer
-          command: |
-            cat ~/inventory.txt
-            cd ansible
-            ansible-playbook -i ~/inventory.txt extract-elb-details.yml
-           # cat ~/elb_details.txt
       - persist_to_workspace:
           root: ~/
           paths:

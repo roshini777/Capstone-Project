@@ -7,19 +7,27 @@
     ENVIRONMENT_TAG: "{{ lookup('env', 'ENVIRONMENT_TAG') }}"
     CIRCLE_WORKFLOW_ID: "{{ lookup('env', 'CIRCLE_WORKFLOW_ID') }}"
   tasks:
-    - name: Update rolling deployment
+    - name: Setup rolling deployment
       shell: "./bin/kubectl set image deployments/{{ ENVIRONMENT_TAG}}-deployment {{ ENVIRONMENT_TAG}}-app=roshini777/{{ ENVIRONMENT_TAG }}:{{ CIRCLE_WORKFLOW_ID }}"
       register: ps
       args:
         chdir: $HOME
-    - debug: msg={{ ps.stdout }}  
+    - debug: msg={{ ps.stdout }} 
 
-    - name: Check deployment services
-      shell: "./bin/kubectl get services"
+    - name: Execute rolling update
+      shell: "./bin/kubectl set image deployments/{{ ENVIRONMENT_TAG}}-deployment {{ ENVIRONMENT_TAG}}-app=roshini777/{{ ENVIRONMENT_TAG }}"
       register: ps1
       args:
         chdir: $HOME
-    - debug: msg={{ ps1.stdout }} 
+    - debug: msg={{ ps1.stdout }}      
+     
+
+    - name: Check deployment services
+      shell: "./bin/kubectl get services"
+      register: ps2
+      args:
+        chdir: $HOME
+    - debug: msg={{ ps2.stdout }} 
 
     - name: Check deployment pods
       shell: "./bin/kubectl get pods"

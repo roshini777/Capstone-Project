@@ -21,8 +21,8 @@
         update_cache: yes
 
   roles:
-    - install-awscli
-    - install-kubectl
+    - setup-awscli
+    - setup-kubectl
 
 - name: "Authenticate AWS CLI with AWS"
   hosts: setup
