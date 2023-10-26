@@ -1,0 +1,10 @@
+roshini@Roshinis-MacBook-Air files % kubectl get services 
+NAME              TYPE           CLUSTER-IP    EXTERNAL-IP                                                               PORT(S)        AGE
+kubernetes        ClusterIP      10.100.0.1    <none>                                                                    443/TCP        54m
+udacity-service   LoadBalancer   10.100.17.2   a17b5e30a469d4af885af86dbbaffb40-1083237370.us-east-1.elb.amazonaws.com   80:32079/TCP   29m
+roshini@Roshinis-MacBook-Air files % kubectl get pods
+NAME                                 READY   STATUS    RESTARTS   AGE
+udacity-deployment-6dcb97684-4r6wb   1/1     Running   0          19s
+udacity-deployment-6dcb97684-dtt2q   1/1     Running   0          15s
+udacity-deployment-6dcb97684-vpbbz   1/1     Running   0          13s
+udacity-deployment-6dcb97684-znn5q   1/1     Running   0          19s

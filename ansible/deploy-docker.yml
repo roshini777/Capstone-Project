@@ -21,17 +21,3 @@
         chdir: $HOME
     - debug: msg={{ ps1.stdout }}      
      
-
-    - name: Check deployment services
-      shell: "./bin/kubectl get services"
-      register: ps2
-      args:
-        chdir: $HOME
-    - debug: msg={{ ps2.stdout }} 
-
-    - name: Check deployment pods
-      shell: "./bin/kubectl get pods"
-      register: ps2
-      args:
-        chdir: $HOME
-    - debug: msg={{ ps2.stdout }} 

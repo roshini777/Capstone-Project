@@ -27,10 +27,10 @@ Below tasks have been accomplished,
 * Tested the image pull from Dockerhub and deployed to Kubernetes cluster locally via minikube
 * CloudFormation templates have been added to create network setup, eks cluster creation, nodegroup configuration(4 pods - desired min-2, max-6) and couple of setup nodes to run ansible tasks
 * As a pre-requisite aws-cli, ansible are installed on the setup nodes. 
-* On the Kubernetes cluster, after setting the context configuration, udacity-app deployment and service configuration are applied on the pods. 
+* On the Kubernetes cluster, after setting the context configuration, udacity-app deployment and service yaml configuration are applied on the pods. 
 * Then in the final step of the pipeline rolling deployment is applied and the latest docker image is served on the loadbalancer. 
 
-### Project Rubric - Test Evidence under Screenshots folder
+### Project Rubric - Test Evidences under Screenshots folder
 
 * Linting step - Both failing and successful runs are taken from the circleci pipeline
 * Docker Hub showing the successful upload of the container image
