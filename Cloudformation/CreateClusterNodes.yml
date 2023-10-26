@@ -67,9 +67,6 @@ Resources:
         MinSize: !Ref MinValue
         MaxSize: !Ref MaxValue
         DesiredSize: !Ref ExpectedValue
-      Tags:
-        - Key: Name
-          Value: !Sub ${Environment}-clusternode
       Subnets:
         Fn::Split:
           - ","
